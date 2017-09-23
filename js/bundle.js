@@ -76479,6 +76479,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 
+	var _analytics = __webpack_require__(1098);
+
+	var _analytics2 = _interopRequireDefault(_analytics);
+
 	var _session = __webpack_require__(272);
 
 	var _contracts = __webpack_require__(1088);
@@ -76496,7 +76500,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// const logger = createLogger()
 	// const store = createStore(reducer, applyMiddleware(logger))
-	var store = (0, _redux.createStore)(reducer);
+
+	var store = (0, _redux.createStore)(reducer, (0, _redux.applyMiddleware)(_analytics2.default));
 
 	exports.default = store;
 
@@ -77386,6 +77391,61 @@ return /******/ (function(modules) { // webpackBootstrap
 	  transformer: undefined
 	};
 	module.exports = exports["default"];
+
+/***/ }),
+/* 1098 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var logTransition = function logTransition(attr, beforeSession, afterSession) {
+	  var before = beforeSession[attr];
+	  var after = afterSession[attr];
+
+	  if (before !== after) {
+	    window.ga('send', {
+	      hitType: 'event',
+	      eventCategory: attr,
+	      eventAction: 'transition',
+	      eventLabel: String(after)
+	    });
+	  }
+	};
+
+	var logEventIfNeeded = function logEventIfNeeded(beforeState, afterState) {
+	  try {
+	    if (typeof window.ga !== 'undefined') {
+	      var beforeSession = beforeState.session;
+	      var afterSession = afterState.session;
+
+	      logTransition('web3Present', beforeSession, afterSession);
+	      logTransition('network', beforeSession, afterSession);
+	      logTransition('coinbase', beforeSession, afterSession);
+	    }
+	  } catch (err) {
+	    console.log('Error on GA', err);
+	  }
+	};
+
+	var analytics = function analytics(_ref) {
+	  var getState = _ref.getState;
+	  return function (next) {
+	    return function (action) {
+	      var beforeState = getState();
+	      var ret = next(action);
+	      var afterState = getState();
+
+	      logEventIfNeeded(beforeState, afterState);
+
+	      return ret;
+	    };
+	  };
+	};
+
+	exports.default = analytics;
 
 /***/ })
 /******/ ])
