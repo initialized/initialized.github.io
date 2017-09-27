@@ -29170,7 +29170,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  switch (action.type) {
 	    case CHECK_WEB3:
 	      {
-	        var _web3Present = typeof window.web3 !== 'undefined';
+	        var _web3Present = typeof window.web3 !== 'undefined' && typeof window.web3.eth !== 'undefined';
 	        // $FlowFixMe - Can't instrospect type
 	        var _coinbase = _web3Present && window.web3.eth.coinbase;
 	        var _network = _web3Present && (0, _helpers.getNetwork)() || 'unknown';
@@ -52175,10 +52175,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'strong',
 	      null,
 	      _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'exclamation-sign' }),
-	      ' Web3 Not Detected!'
+	      ' MetaMask Not Detected!'
 	    ),
 	    ' ',
-	    'You won\'t be able to interact with smart contracts. To enable Web3 please install the',
+	    'You won\'t be able to interact with smart contracts. To enable please install the',
 	    ' ',
 	    ' ',
 	    _react2.default.createElement(
